@@ -28,45 +28,45 @@ public class ToDoServiceImpl implements ToDoService {
    private AuthService authService;
 
    public ToDoDto createToDo(ToDoCreateDto toDoCreateDto) {
-      ToDo toDoCreated = this.toDoMapper.toDoCreateDtoToToDo(toDoCreateDto);
-      User userLogged = this.userService.getLoggingInUser();
+      ToDo toDoCreated = toDoMapper.toDoCreateDtoToToDo(toDoCreateDto);
+      User userLogged = userService.getLoggingInUser();
       toDoCreated.setUser(userLogged);
-      return this.toDoMapper.toDoToToDoDto((ToDo)this.toDoRepository.save(toDoCreated));
+      return toDoMapper.toDoToToDoDto(toDoRepository.save(toDoCreated));
    }
 
    public Page<ToDoDto> getAllToDos(int page, int limit) {
-      String currentUserEmail = this.authService.getCurrentUserEmail();
+      String currentUserEmail = authService.getCurrentUserEmail();
       Pageable pageable = PageRequest.of(page - 1, limit);
-      return this.toDoRepository.findByUser_Email(currentUserEmail, pageable).map((t) -> {
-         return this.toDoMapper.toDoToToDoDto(t);
+      return toDoRepository.findByUser_Email(currentUserEmail, pageable).map((t) -> {
+         return toDoMapper.toDoToToDoDto(t);
       });
    }
 
    public ToDo getToDoById(Long id_toDo) {
-      return (ToDo)this.toDoRepository.findById(id_toDo).orElseThrow(() -> {
+      return toDoRepository.findById(id_toDo).orElseThrow(() -> {
          return new ResourceNotFoundException("ToDo not found.");
       });
    }
 
    public void deleteToDo(Long id_toDo) {
-      ToDo toDoDelete = this.getToDoById(id_toDo);
-      String currentUserEmail = this.authService.getCurrentUserEmail();
+      ToDo toDoDelete = getToDoById(id_toDo);
+      String currentUserEmail = authService.getCurrentUserEmail();
       if (toDoDelete.getUser().getEmail().equals(currentUserEmail)) {
-         this.toDoRepository.deleteById(id_toDo);
+         toDoRepository.deleteById(id_toDo);
       } else {
          throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
       }
    }
 
    public ToDoDto updateToDo(Long id_toDo, ToDoCreateDto toDoCreateDto) {
-      ToDo toDoUpdate = this.getToDoById(id_toDo);
-      String currentUserEmail = this.authService.getCurrentUserEmail();
+      ToDo toDoUpdate = getToDoById(id_toDo);
+      String currentUserEmail = authService.getCurrentUserEmail();
       if (!toDoUpdate.getUser().getEmail().equals(currentUserEmail)) {
          throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
       } else {
          toDoUpdate.setTitle(toDoCreateDto.title());
          toDoUpdate.setDescription(toDoCreateDto.description());
-         return this.toDoMapper.toDoToToDoDto((ToDo)this.toDoRepository.save(toDoUpdate));
+         return toDoMapper.toDoToToDoDto(toDoRepository.save(toDoUpdate));
       }
    }
 

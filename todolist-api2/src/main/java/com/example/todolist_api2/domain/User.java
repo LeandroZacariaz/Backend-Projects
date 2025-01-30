@@ -42,7 +42,7 @@ public class User implements UserDetails{
     private List<ToDo> todos;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
-      return List.of(new SimpleGrantedAuthority(this.role.name()));
+      return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
    public String getUsername() {

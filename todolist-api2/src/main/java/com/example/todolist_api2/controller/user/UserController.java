@@ -20,7 +20,7 @@ public class UserController {
 
    @GetMapping({"/{id}"})
    public ResponseEntity<?> getUserById(@PathVariable("id") Long id_user) {
-      UserDto user = this.userMapper.UserToUserDto(this.userService.getUserById(id_user));
+      UserDto user = userMapper.UserToUserDto(userService.getUserById(id_user));
       return ResponseEntity.ok().body(user);
    }
 

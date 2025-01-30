@@ -31,21 +31,21 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public AuthResponseDto login(UserLoginDto userLoginDto) {
         try {
-         this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginDto.email(), userLoginDto.password()));
+         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginDto.email(), userLoginDto.password()));
       } catch (BadCredentialsException var4) {
          throw new InvalidCredentialsException("Invalid email or password.");
       }
 
-      UserDetails user = (UserDetails)this.userRepository.findByEmail(userLoginDto.email()).orElseThrow(() -> {
+      UserDetails user = userRepository.findByEmail(userLoginDto.email()).orElseThrow(() -> {
          return new ResourceNotFoundException("User not found with email: " + userLoginDto.email());
       });
-      String token = this.jwtService.getToken(user);
+      String token = jwtService.getToken(user);
       return AuthResponseDto.builder().token(token).build();
     }
 
     @Override
     public AuthResponseDto register(UserRegisterDto userRegisterDto) {
-        if (this.userRepository.existsByEmail(userRegisterDto.email())) {
+        if (userRepository.existsByEmail(userRegisterDto.email())) {
             throw new EmailAlreadyExistsException("The email " + userRegisterDto.email() + " is already registered.");
          } else {
             User user = userService.createUser(userRegisterDto);

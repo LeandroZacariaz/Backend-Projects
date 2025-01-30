@@ -24,12 +24,12 @@ public class JwtServiceImpl implements JwtService {
    private static final String SECRET_KEY = "A3F5E9D1C6B4A1D2F8E8C5E2A3C7D8B1A9D6E8F4B2C9D5F6E8D3A4C1E7F9B9";
 
    public String getToken(UserDetails user) {
-      return this.getToken(new HashMap<>(), user);
+      return getToken(new HashMap<>(), user);
    }
    
    private String getToken(Map<String, Object> extraClaims, UserDetails user) {
       try {
-         return Jwts.builder().setClaims(extraClaims).setSubject(user.getUsername()).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + 86400000L)).signWith(this.getKey(), SignatureAlgorithm.HS256).compact();
+         return Jwts.builder().setClaims(extraClaims).setSubject(user.getUsername()).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + 86400000L)).signWith(getKey(), SignatureAlgorithm.HS256).compact();
       } catch (Exception var4) {
          throw new JwtException("Error while creating the token: " + var4.getMessage());
       }
@@ -41,33 +41,33 @@ public class JwtServiceImpl implements JwtService {
    }
 
    public String getEmailFromToken(String token) {
-      return (String)this.getClaim(token, Claims::getSubject);
+      return getClaim(token, Claims::getSubject);
    }
 
    public boolean isTokenValid(String token, UserDetails userDetails) {
-      String email = this.getEmailFromToken(token);
-      return email.equals(userDetails.getUsername()) && !this.isTokenExpired(token);
+      String email = getEmailFromToken(token);
+      return email.equals(userDetails.getUsername()) && !isTokenExpired(token);
    }
 
    private Claims getAllClaims(String token) {
       try {
-         return (Claims)Jwts.parserBuilder().setSigningKey(this.getKey()).build().parseClaimsJws(token).getBody();
+         return Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token).getBody();
       } catch (ExpiredJwtException var3) {
          throw new JwtException("Token Error: " + var3.getMessage());
       }
    }
 
    public <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
-      Claims claims = this.getAllClaims(token);
+      Claims claims = getAllClaims(token);
       return claimsResolver.apply(claims);
    }
 
    private Date getExpiration(String token) {
-      return (Date)this.getClaim(token, Claims::getExpiration);
+      return getClaim(token, Claims::getExpiration);
    }
 
    private boolean isTokenExpired(String token) {
-      return this.getExpiration(token).before(new Date());
+      return getExpiration(token).before(new Date());
    }
 
 }

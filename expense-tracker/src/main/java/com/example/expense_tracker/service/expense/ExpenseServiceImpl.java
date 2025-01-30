@@ -82,8 +82,8 @@ public class ExpenseServiceImpl implements ExpenseService{
                 .map(expense -> expenseMapper.expenseToExpenseDto(expense));
     }
     
-    return this.expenseRepository.findByUser_Email(currentUserEmail, pageable)
-            .map(expense -> this.expenseMapper.expenseToExpenseDto(expense));
+    return expenseRepository.findByUser_Email(currentUserEmail, pageable)
+            .map(expense -> expenseMapper.expenseToExpenseDto(expense));
     }
 
     @Override

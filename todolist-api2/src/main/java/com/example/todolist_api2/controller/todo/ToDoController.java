@@ -31,31 +31,31 @@ public class ToDoController {
 
    @PostMapping
    public ResponseEntity<?> createToDo(@RequestBody @Valid ToDoCreateDto toDoCreateDto) {
-      ToDoDto toDoDto = this.toDoService.createToDo(toDoCreateDto);
+      ToDoDto toDoDto = toDoService.createToDo(toDoCreateDto);
       return ResponseEntity.status(HttpStatus.CREATED).body(toDoDto);
    }
 
    @PutMapping({"/{id}"})
    public ResponseEntity<?> updateToDo(@PathVariable("id") Long id_toDo, @RequestBody @Valid ToDoCreateDto toDoCreateDto) {
-      ToDoDto toDoUpdated = this.toDoService.updateToDo(id_toDo, toDoCreateDto);
+      ToDoDto toDoUpdated = toDoService.updateToDo(id_toDo, toDoCreateDto);
       return ResponseEntity.ok().body(toDoUpdated);
    }
 
    @GetMapping
    public ResponseEntity<?> getAllToDos(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int limit) {
-      Page<ToDoDto> toDosPage = this.toDoService.getAllToDos(page, limit);
+      Page<ToDoDto> toDosPage = toDoService.getAllToDos(page, limit);
       return ResponseEntity.ok().body(Map.of("data", toDosPage.getContent(), "page", page, "limit", limit, "total", toDosPage.getTotalElements()));
    }
 
    @GetMapping({"/{id}"})
    public ResponseEntity<?> getToDoById(@PathVariable("id") Long id_toDo) {
-      ToDoDto toDoDto = this.toDoMapper.toDoToToDoDto(this.toDoService.getToDoById(id_toDo));
+      ToDoDto toDoDto = toDoMapper.toDoToToDoDto(toDoService.getToDoById(id_toDo));
       return ResponseEntity.ok().body(toDoDto);
    }
 
    @DeleteMapping({"/{id}"})
    public ResponseEntity<?> deleteToDo(@PathVariable("id") Long id_toDo) {
-      this.toDoService.deleteToDo(id_toDo);
+      toDoService.deleteToDo(id_toDo);
       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
    }
 
