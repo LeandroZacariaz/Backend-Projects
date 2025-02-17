@@ -1,5 +1,6 @@
 package com.blogplatform.blogging_api.mappers.category;
 
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
