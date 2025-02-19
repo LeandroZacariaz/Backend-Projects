@@ -24,14 +24,19 @@ public class SecurityConfig {
       return http
          .csrf(csrf -> csrf.disable())
          .authorizeHttpRequests(authRequest -> authRequest
-            .requestMatchers("/auth/**").permitAll()
-            .anyRequest().authenticated()
+               .requestMatchers(
+                  "/auth/**",
+                  "/swagger-ui/**",  // Permitir acceso a Swagger UI
+                  "/v3/api-docs/**"   // Permitir acceso a la documentación OpenAPI
+               ).permitAll()
+               .anyRequest().authenticated()
          )
          .sessionManagement(sessionManager -> sessionManager
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+               .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
          )
          .authenticationProvider(authenticationProvider)
          .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
          .build();
    }
+
 }
