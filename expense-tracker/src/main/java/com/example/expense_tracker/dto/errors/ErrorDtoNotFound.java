@@ -1,5 +1,14 @@
 package com.example.expense_tracker.dto.errors;
 
-public record ErrorDtoNotFound(String path, String message) {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "DTO para errores cuando un recurso no es encontrado")
+public record ErrorDtoNotFound(
+    @Schema(description = "Ruta de la solicitud donde ocurrió el error")
+    String path,
+    
+    @Schema(description = "Mensaje detallado del error")
+    String message
+) {
 
 }
